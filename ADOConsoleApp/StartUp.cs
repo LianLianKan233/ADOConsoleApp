@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System.Runtime.Versioning;
 
 public class Startup
 {
@@ -16,5 +20,22 @@ public class Startup
         {
             return new QueryExecutor("orgName", "accessToken");
         });
+    }
+
+    [SupportedOSPlatform("windows")]
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            // In Development, use the Developer Exception Page
+            app.UseDeveloperExceptionPage();
+        }
+        else
+        {
+            // In Staging/Production, route exceptions to /error
+            app.UseExceptionHandler("/error");
+        }
+
+        var contentRootPath = env.ContentRootPath;
     }
 }

@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.HttpSys;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using System.Runtime.Versioning;
 
 class Program
 {
@@ -15,6 +12,8 @@ class Program
     Host.CreateDefaultBuilder(args)
         .ConfigureWebHostDefaults(webBuilder =>
         {
-            webBuilder.UseStartup<Startup>();
+            webBuilder
+            .UseStartup<Startup>()
+            .UseUrls("https://+:444/fhl/");
         });
 }

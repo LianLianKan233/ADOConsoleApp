@@ -1,4 +1,7 @@
-﻿class Program
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+
+class Program
 {
     static async Task Main(string[] args)
     {
@@ -7,18 +10,13 @@
         Console.WriteLine("Console Calculator in C#\r");
         Console.WriteLine("------------------------\n");
 
-        await QueryExecutor.PrintOpenBugsAsync("ess");
+        //await QueryExecutor.PrintOpenBugsAsync("ess");
 
         while (!endApp)
         {
-            // Declare variables and set to empty.
-            string numInput1 = "";
-            string numInput2 = "";
-            double result = 0;
-
             // Ask the user to type the first number.
             Console.Write("Type a number, and then press Enter: ");
-            numInput1 = Console.ReadLine();
+            var numInput1 = Console.ReadLine();
 
             double cleanNum1 = 0;
             while (!double.TryParse(numInput1, out cleanNum1))
@@ -29,8 +27,6 @@
 
             Console.Write("Press 'n' and Enter to close the app, or press any other key and Enter to continue: ");
             if (Console.ReadLine() == "n") endApp = true;
-
-            Console.WriteLine("\n"); // Friendly linespacing.
         }
         return;
     }

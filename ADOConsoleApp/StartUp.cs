@@ -29,11 +29,13 @@ public class Startup
         {
             // In Development, use the Developer Exception Page
             app.UseDeveloperExceptionPage();
+            app.UseRouting();
         }
         else
         {
             // In Staging/Production, route exceptions to /error
             app.UseExceptionHandler("/error");
+            app.UseRouting();
         }
 
         var contentRootPath = env.ContentRootPath;

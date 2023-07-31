@@ -5,7 +5,6 @@ using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 namespace AspNetCoreAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
     public class WorkItemController : ControllerBase
     {
         private readonly IQueryExecutor executor;
@@ -25,8 +24,9 @@ namespace AspNetCoreAPI.Controllers
             this.executor = executor;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public async Task<IEnumerable<WorkItem>> Get()
+        [Route("openBugs")]
+        [HttpGet]
+        public async Task<IEnumerable<WorkItem>> QueryOpenBugs()
         {
             // TODO:adding settings file
             this.logger.LogInformation("Query Open Bugs");

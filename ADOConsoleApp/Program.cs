@@ -1,19 +1,26 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 class Program
 {
     public static void Main(string[] args)
     {
-        CreateHostBuilder(args).Build().Run();
+        CreateHostBuilder(args).Run();
     }
 
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-    Host.CreateDefaultBuilder(args)
-        .ConfigureWebHostDefaults(webBuilder =>
+    public static WebApplication CreateHostBuilder(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        builder.Services.AddControllers();
+        builder.Services.AddScoped<IQueryExecutor, QueryExecutor>((serviceProvider) =>
         {
-            webBuilder
-            .UseStartup<Startup>()
-            .UseUrls("https://+:444/fhl/");
+            return new QueryExecutor("orgName", "accessToken");
         });
+        var app = builder.Build();
+        app.UseHttpsRedirection();
+        app.UseAuthorization();
+        app.MapControllers();
+
+        return app;
+    }
 }

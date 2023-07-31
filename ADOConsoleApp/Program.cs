@@ -1,10 +1,27 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.HttpSys;
+using System.Runtime.Versioning;
 
 class Program
 {
-    static async Task Main(string[] args)
+    /// <summary>
+    /// Main entry point
+    /// </summary>
+    /// <param name="args">Arguments list</param>
+    [SupportedOSPlatform("windows")]
+    public static void Main(string[] args)
     {
+        IWebHost webHost = BuildWebHost(args);
+        try
+        {
+            webHost.Run();
+        }
+        catch (HttpSysException ex)
+        {
+            Environment.Exit(ex.ErrorCode);
+        }
+
         bool endApp = false;
         // Display title as the C# console calculator app.
         Console.WriteLine("Console Calculator in C#\r");
@@ -28,6 +45,21 @@ class Program
             Console.Write("Press 'n' and Enter to close the app, or press any other key and Enter to continue: ");
             if (Console.ReadLine() == "n") endApp = true;
         }
-        return;
     }
+
+    /// <summary>
+    /// Method to build web host
+    /// </summary>
+    /// <param name="args">Argument list</param>
+    /// <returns>web host</returns>
+    [SupportedOSPlatform("windows")]
+    public static IWebHost BuildWebHost(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .UseHttpSys(o =>
+            {
+                o.AllowSynchronousIO = true;
+            })
+        .UseUrls("https://+:444/fhl/")
+        .UseStartup<Startup>()
+        .Build();
 }

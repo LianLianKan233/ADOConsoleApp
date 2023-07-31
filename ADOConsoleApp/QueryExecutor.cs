@@ -8,7 +8,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.Common;
 
-public class QueryExecutor
+public class QueryExecutor: IQueryExecutor
 {
     private readonly Uri uri;
     private readonly string personalAccessToken;

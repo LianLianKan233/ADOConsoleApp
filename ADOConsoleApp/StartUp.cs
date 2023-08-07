@@ -18,7 +18,7 @@ public class Startup
     {
         services.AddScoped<IQueryExecutor, QueryExecutor>((serviceProvider) =>
         {
-            return new QueryExecutor("orgName", "accessToken");
+            return new QueryExecutor("O365%20Core", "xhxmpqprdyagfcyo5eqq7haxuxlhvym2bvd6ruuh2pzavy5daxbq");
         });
     }
 

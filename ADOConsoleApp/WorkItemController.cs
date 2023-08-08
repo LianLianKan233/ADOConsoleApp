@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.TeamFoundation.Test.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 
 namespace AspNetCoreAPI.Controllers
@@ -7,7 +8,7 @@ namespace AspNetCoreAPI.Controllers
     [ApiController]
     public class WorkItemController : ControllerBase
     {
-        private readonly IQueryExecutor executor;
+        private readonly IAdoExecutor executor;
 
         private readonly ILogger<WorkItemController> logger;
 
@@ -18,7 +19,7 @@ namespace AspNetCoreAPI.Controllers
 
         public WorkItemController(
         ILogger<WorkItemController> logger,
-        IQueryExecutor executor)
+        IAdoExecutor executor)
         {
             this.logger = logger;
             this.executor = executor;
@@ -31,6 +32,15 @@ namespace AspNetCoreAPI.Controllers
             // TODO:adding settings file
             this.logger.LogInformation("Query Open Bugs");
             return await this.executor.QueryOpenBugs("projectName");
+        }
+
+        [Route("sendToChannel")]
+        [HttpGet]
+        public async Task SendToChannel()
+        {
+            // POST /teams/{team-id}/channels/{channel-id}/ messages /{ message - id
+            this.logger.LogInformation("Send To Channel");
+            await this.executor.QueryOpenBugs("projectName");
         }
     }
 }

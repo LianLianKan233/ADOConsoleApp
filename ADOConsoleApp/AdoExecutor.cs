@@ -1,31 +1,28 @@
 ﻿// nuget:Microsoft.TeamFoundationServer.Client
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Services.WebApi;
 
-public class QueryExecutor
+public class AdoExecutor: IAdoExecutor
 {
     private readonly Uri uri;
     private readonly string personalAccessToken;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="QueryExecutor" /> class.
+    ///     Initializes a new instance of the <see cref="AdoExecutor" /> class.
     /// </summary>
-    /// <param name="orgName">An organization in Azure DevOps Services.
+    /// <param name="orgName">
+    ///     An organization in Azure DevOps Services. If you don't have one, you can create one for free:
     ///     <see href="https://go.microsoft.com/fwlink/?LinkId=307137" />.
     /// </param>
     /// <param name="personalAccessToken">
     ///     A Personal Access Token, find out how to create one:
     ///     <see href="/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops" />.
     /// </param>
-    public QueryExecutor(string orgName, string personalAccessToken)
+    public AdoExecutor(string orgName, string personalAccessToken)
     {
-        this.uri = new Uri("https://dev.azure.com/" + orgName);
+        this.uri = new Uri("https://o365exchange.visualstudio.com/");
         this.personalAccessToken = personalAccessToken;
     }
 
@@ -36,7 +33,16 @@ public class QueryExecutor
     /// <returns>A list of <see cref="WorkItem"/> objects representing all the open bugs.</returns>
     public async Task<IList<WorkItem>> QueryOpenBugs(string project)
     {
-        var credentials = new VssBasicCredential(string.Empty, this.personalAccessToken);
+        Console.WriteLine(this.uri);
+
+        VssConnection vssConnection = new VssConnection(
+            this.uri,
+            new VssBasicCredential(string.Empty, this.personalAccessToken));
+
+        WorkItemTrackingHttpClient witClient = vssConnection.GetClient<WorkItemTrackingHttpClient>();
+        List<WorkItemField> onlineFieldsInAllProcesses = await witClient.GetFieldsAsync().ConfigureAwait(false);
+
+        Console.WriteLine("Items retrieved?");
 
         // create a wiql object and build our query
         var wiql = new Wiql()
@@ -45,30 +51,29 @@ public class QueryExecutor
             Query = "Select [Id] " +
                     "From WorkItems " +
                     "Where [Work Item Type] = 'Bug' " +
-                    "And [System.TeamProject] = '" + project + "' " +
+                    "And [System.AssignedTo] = @Me " +
+                    "And [System.AreaPath] = 'O365 Core\\ESS' "+
                     "And [System.State] <> 'Closed' " +
                     "Order By [State] Asc, [Changed Date] Desc",
         };
 
-        // create instance of work item tracking http client
-        using (var httpClient = new WorkItemTrackingHttpClient(this.uri, credentials))
+        // execute the query to get the list of work items in the results
+        WorkItemQueryResult result = await witClient.QueryByWiqlAsync(wiql).ConfigureAwait(false);
+        var ids = result.WorkItems.Select(item => item.Id).ToArray();
+
+        Console.WriteLine($"{ids.Length} result retrieved");
+
+        // some error handling
+        if (ids.Length == 0)
         {
-            // execute the query to get the list of work items in the results
-            var result = await httpClient.QueryByWiqlAsync(wiql).ConfigureAwait(false);
-            var ids = result.WorkItems.Select(item => item.Id).ToArray();
-
-            // some error handling
-            if (ids.Length == 0)
-            {
-                return Array.Empty<WorkItem>();
-            }
-
-            // build a list of the fields we want to see
-            var fields = new[] { "System.Id", "System.Title", "System.State" };
-
-            // get work items for the ids found in query
-            return await httpClient.GetWorkItemsAsync(ids, fields, result.AsOf).ConfigureAwait(false);
+            return Array.Empty<WorkItem>();
         }
+
+        // build a list of the fields we want to see
+        var fields = new[] { "url", "System.Id", "System.Description", "System.Title", "System.State" };
+
+        // get work items for the ids found in query
+        return await witClient.GetWorkItemsAsync(ids, fields: fields, asOf: result.AsOf).ConfigureAwait(false);
     }
 
     /// <summary>

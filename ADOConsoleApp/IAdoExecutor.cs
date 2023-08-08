@@ -1,7 +1,7 @@
 ﻿// nuget:Microsoft.TeamFoundationServer.Client
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 
-public interface IQueryExecutor
+public interface IAdoExecutor
 {
     /// <summary>
     ///     Execute a WIQL (Work Item Query Language) query to return a list of open bugs.

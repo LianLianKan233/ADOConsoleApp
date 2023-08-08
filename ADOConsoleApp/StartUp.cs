@@ -16,9 +16,9 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddScoped<IQueryExecutor, QueryExecutor>((serviceProvider) =>
+        services.AddScoped<IAdoExecutor, AdoExecutor>((serviceProvider) =>
         {
-            return new QueryExecutor("O365%20Core", "xhxmpqprdyagfcyo5eqq7haxuxlhvym2bvd6ruuh2pzavy5daxbq");
+            return new AdoExecutor("O365%20Core", "xhxmpqprdyagfcyo5eqq7haxuxlhvym2bvd6ruuh2pzavy5daxbq");
         });
     }
 
@@ -37,7 +37,5 @@ public class Startup
             app.UseExceptionHandler("/error");
             app.UseRouting();
         }
-
-        var contentRootPath = env.ContentRootPath;
     }
 }

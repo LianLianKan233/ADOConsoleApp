@@ -12,7 +12,7 @@ class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddControllers();
-        builder.Services.AddScoped<IQueryExecutor, QueryExecutor>((serviceProvider) =>
+        builder.Services.AddScoped<IAdoExecutor, AdoExecutor>((serviceProvider) =>
         {
             return new QueryExecutor("O365%20Core", "xhxmpqprdyagfcyo5eqq7haxuxlhvym2bvd6ruuh2pzavy5daxbq");
         });

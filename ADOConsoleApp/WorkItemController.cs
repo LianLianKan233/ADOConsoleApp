@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.TeamFoundation.Test.WebApi;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 
 namespace AspNetCoreAPI.Controllers

@@ -1,16 +1,16 @@
 ﻿using Newtonsoft.Json;
 
-public class ChatMessage
+public class ItemBody
 {
     /// <summary>
     /// Message body
     /// </summary>
-    [JsonProperty("body")]
-    public ItemBody Body { get; set; }
+    [JsonProperty("Content")]
+    public string Content { get; set; }
 
     /// <summary>
     /// The tenant id
     /// </summary>
     [JsonProperty("tenantId")]
-    public string TenantId { get; set; }
+    public string Sth { get; set; }
 }

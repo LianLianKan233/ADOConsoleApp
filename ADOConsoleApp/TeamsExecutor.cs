@@ -1,5 +1,7 @@
 ﻿using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Newtonsoft.Json.Linq;
+using System.Net.Http.Formatting;
+using System.Text.Json;
 
 public class TeamsExecutor : ITeamsExecutor
 {
@@ -20,7 +22,7 @@ public class TeamsExecutor : ITeamsExecutor
     {
         //  POST https://graph.microsoft.com/v1.0/teams/fbe2bf47-16c8-47cf-b4a5-4b9b187c508b/channels/19:4a95f7d8db4c4e7fae857bcebe0623e6@thread.tacv2/messages
         //  Content - type: application / json
-        var requestBody = new ChatMessage
+        var requestBody = new ChatMessage()
         {
             Body = new ItemBody
             {
@@ -29,9 +31,9 @@ public class TeamsExecutor : ITeamsExecutor
         };
 
         var targetUri = $"https://graph.microsoft.com/v1.0/teams/{teamId}/channels/{channelId}/messages";
-        using HttpResponseMessage response = await client.PostAsync<JObject>(
+        using HttpResponseMessage response = await client.PostAsync(
             targetUri,
-            new JObject);
+            JsonSerializer.Serialize(requestBody));
         response.EnsureSuccessStatusCode();
         string responseBody = await response.Content.ReadAsStringAsync();
         // Above three lines can be replaced with new helper method below

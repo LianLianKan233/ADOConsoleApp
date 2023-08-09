@@ -14,7 +14,11 @@ class Program
         builder.Services.AddControllers();
         builder.Services.AddScoped<IAdoExecutor, AdoExecutor>((serviceProvider) =>
         {
-            return new QueryExecutor("O365%20Core", "xhxmpqprdyagfcyo5eqq7haxuxlhvym2bvd6ruuh2pzavy5daxbq");
+            return new AdoExecutor("O365%20Core", "xhxmpqprdyagfcyo5eqq7haxuxlhvym2bvd6ruuh2pzavy5daxbq");
+        });
+        builder.Services.AddScoped<ITeamsExecutor, TeamsExecutor>((serviceProvider) =>
+        {
+            return new TeamsExecutor();
         });
         var app = builder.Build();
         app.UseHttpsRedirection();

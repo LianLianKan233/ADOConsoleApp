@@ -9,6 +9,8 @@ namespace AspNetCoreAPI.Controllers
     {
         private readonly IAdoExecutor executor;
 
+        private readonly ITeamsExecutor teamsExecutor;
+
         private readonly ILogger<WorkItemController> logger;
 
         private static readonly string[] WorkStatus = new[]
@@ -18,10 +20,12 @@ namespace AspNetCoreAPI.Controllers
 
         public WorkItemController(
         ILogger<WorkItemController> logger,
-        IAdoExecutor executor)
+        IAdoExecutor executor,
+        ITeamsExecutor teamsExecutor)
         {
             this.logger = logger;
             this.executor = executor;
+            this.teamsExecutor = teamsExecutor;
         }
 
         [Route("openBugs")]
@@ -39,7 +43,7 @@ namespace AspNetCoreAPI.Controllers
         {
             // POST /teams/{team-id}/channels/{channel-id}/ messages /{ message - id
             this.logger.LogInformation("Send To Channel");
-            await this.executor.QueryOpenBugs("projectName");
+            await this.teamsExecutor.SendToChannelAuth("randomCannel");
         }
     }
 }

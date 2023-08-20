@@ -20,6 +20,10 @@ class Program
         {
             return new TeamsExecutor();
         });
+        builder.Services.AddScoped<ISKExecutor, SK>((serviceProvider) =>
+        {
+            return new SK();
+        });
         var app = builder.Build();
         app.UseHttpsRedirection();
         app.UseAuthorization();

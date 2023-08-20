@@ -11,6 +11,8 @@ namespace AspNetCoreAPI.Controllers
 
         private readonly ITeamsExecutor teamsExecutor;
 
+        private readonly ISKExecutor skExecutor;
+
         private readonly ILogger<WorkItemController> logger;
 
         private static readonly string[] WorkStatus = new[]
@@ -21,11 +23,13 @@ namespace AspNetCoreAPI.Controllers
         public WorkItemController(
         ILogger<WorkItemController> logger,
         IAdoExecutor executor,
-        ITeamsExecutor teamsExecutor)
+        ITeamsExecutor teamsExecutor,
+        ISKExecutor skExecutor)
         {
             this.logger = logger;
             this.executor = executor;
             this.teamsExecutor = teamsExecutor;
+            this.skExecutor = skExecutor;
         }
 
         [Route("openBugs")]
@@ -35,6 +39,24 @@ namespace AspNetCoreAPI.Controllers
             // TODO:adding settings file
             this.logger.LogInformation("Query Open Bugs");
             return await this.executor.QueryOpenBugs("projectName");
+        }
+
+        [Route("runSK")]
+        [HttpGet]
+        public async Task<String> RunSK()
+        {
+            this.logger.LogInformation("Run SK");
+            return await this.skExecutor.generateContext();
+        }
+
+        [Route("summarize")]
+        [HttpGet]
+        public async Task<String> Summarize()
+        {
+            // How to break the task in steps?
+            // Get work item. Filter out status. Summarize. Format.
+            this.logger.LogInformation("Get work items and summarize");
+            return await this.skExecutor.generateContext();
         }
 
         [Route("sendToChannel")]

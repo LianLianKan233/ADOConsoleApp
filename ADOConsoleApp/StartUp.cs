@@ -7,6 +7,7 @@ using System.Runtime.Versioning;
 
 public class Startup
 {
+    // Hey, I'm not using startup
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
@@ -19,6 +20,11 @@ public class Startup
         services.AddScoped<IAdoExecutor, AdoExecutor>((serviceProvider) =>
         {
             return new AdoExecutor("O365%20Core", "xhxmpqprdyagfcyo5eqq7haxuxlhvym2bvd6ruuh2pzavy5daxbq");
+        });
+
+        services.AddScoped<ISKExecutor, SK>((serviceProvider) =>
+        {
+            return new SK();
         });
     }
 

@@ -56,7 +56,9 @@ namespace AspNetCoreAPI.Controllers
             // How to break the task in steps?
             // Get work item. Filter out status. Summarize. Format.
             this.logger.LogInformation("Get work items and summarize");
-            return await this.skExecutor.generateContext();
+            var bugs = await QueryOpenBugs().ConfigureAwait(false);
+
+            return await this.skExecutor.generateReport(bugs);
         }
 
         [Route("sendToChannel")]

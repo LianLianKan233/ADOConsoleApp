@@ -1,7 +1,10 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.SemanticFunctions;
+using Microsoft.SemanticKernel.SkillDefinition;
 using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.Common;
+using Microsoft.SemanticKernel.Orchestration;
+using Microsoft.SemanticKernel.SkillDefinition;
 
 public class SK: ISKExecutor
 {
@@ -33,7 +36,11 @@ public class SK: ISKExecutor
 
     public async Task<String> generateReport(IEnumerable<WorkItem> items)
     {
-        Console.WriteLine("Mirror mirror, generate weekly report for me");
+        Console.WriteLine("Mirror mirror, generate the weekly report for me");
+        Console.WriteLine($"There are in total {items.Count()} items");
+        Console.WriteLine($"These are the fields of a work item {String.Join(",", items.First().Fields.Keys)}");
+
+        items = items.ToList().GetRange(0, 3);
 
         var prompt = @"{{$input}}
 
@@ -48,7 +55,6 @@ public class SK: ISKExecutor
         {
             "System.Title",
             "System.Description",
-            "url"
         };
 
         var itemContents = items.Select(x => String.Join(",", relevantFields.Select(f => f + ": " + x.Fields[f].ToString())));
@@ -69,6 +75,29 @@ public class SK: ISKExecutor
             2nd Law of Thermodynamics - For a spontaneous process, the entropy of the universe increases.
             3rd Law of Thermodynamics - A perfect crystal at zero Kelvin has zero entropy.";
    
+        Console.WriteLine("Oh, I'm console log");
+
+        var prompt = @"{{$input}}
+
+            One line TLDR with the fewest words.";
+
+        var summarize = kernel.CreateSemanticFunction(prompt);
+
+        var result = await summarize.InvokeAsync(text1);
+        return result.ToString();
+
+        // Output:
+        //   Energy conserved, entropy increases, zero entropy at 0K.
+        //   Objects move in response to forces.
+    }
+
+    public async Task<String> introduce(string question)
+    {
+        string question = @"
+            1st Law of Thermodynamics - Energy cannot be created or destroyed.
+            2nd Law of Thermodynamics - For a spontaneous process, the entropy of the universe increases.
+            3rd Law of Thermodynamics - A perfect crystal at zero Kelvin has zero entropy.";
+
         Console.WriteLine("Oh, I'm console log");
 
         var prompt = @"{{$input}}

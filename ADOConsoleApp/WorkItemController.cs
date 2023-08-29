@@ -57,10 +57,28 @@ namespace AspNetCoreAPI.Controllers
             // Get work item. Filter out status. Summarize. Format.
             this.logger.LogInformation("Get work items and summarize");
             var bugs = await QueryOpenBugs().ConfigureAwait(false);
+            this.logger.LogInformation("How many bugs?");
 
             return await this.skExecutor.generateReport(bugs);
         }
 
+        [Route("getEssAnswer")]
+        [HttpGet]
+        public async Task<String> IntroduceEss()
+        {
+            this.logger.LogInformation("Answer ess related questions");
+            // Let frontend post /IntroduceEss with question text in payload
+            // Let SK kernel see the payload, generate answers, and returns
+            // Related skills are:
+            // 1. Collect info (of throughput, capacity, concurrency level)
+            // 2. Introduce
+            // 3. Suggest desired partition count
+            this.logger.LogInformation("How many bugs?");
+
+            return await this.skExecutor.introduce(bugs);
+        }
+
+        // Deprecated
         [Route("sendToChannel")]
         [HttpGet]
         public async Task SendToChannel()

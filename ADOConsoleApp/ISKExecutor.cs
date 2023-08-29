@@ -5,4 +5,6 @@ public interface ISKExecutor
     Task<String> generateContext();
 
     Task<String> generateReport(IEnumerable<WorkItem> input);
+
+    Task<String> introduce(IEnumerable<WorkItem> input);
 }

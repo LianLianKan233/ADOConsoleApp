@@ -40,7 +40,7 @@ public class AdoExecutor: IAdoExecutor
             new VssBasicCredential(string.Empty, this.personalAccessToken));
 
         WorkItemTrackingHttpClient witClient = vssConnection.GetClient<WorkItemTrackingHttpClient>();
-        List<WorkItemField> onlineFieldsInAllProcesses = await witClient.GetFieldsAsync().ConfigureAwait(false);
+        //List<WorkItemField> onlineFieldsInAllProcesses = await witClient.GetFieldsAsync().ConfigureAwait(false);
 
         Console.WriteLine("Items retrieved?");
 
@@ -50,7 +50,7 @@ public class AdoExecutor: IAdoExecutor
             // NOTE: Even if other columns are specified, only the ID & URL are available in the WorkItemReference
             Query = "Select [Id] " +
                     "From WorkItems " +
-                    "Where [Work Item Type] = 'Bug' " +
+                    "Where [Work Item Type] = 'Task' " +
                     "And [System.AssignedTo] = @Me " +
                     "And [System.AreaPath] = 'O365 Core\\ESS' "+
                     "And [System.State] <> 'Closed' " +
@@ -70,7 +70,7 @@ public class AdoExecutor: IAdoExecutor
         }
 
         // build a list of the fields we want to see
-        var fields = new[] { "url", "System.Id", "System.Description", "System.Title", "System.State" };
+        var fields = new[] {"System.Id", "System.Description", "System.Title", "System.State" };
 
         // get work items for the ids found in query
         return await witClient.GetWorkItemsAsync(ids, fields: fields, asOf: result.AsOf).ConfigureAwait(false);

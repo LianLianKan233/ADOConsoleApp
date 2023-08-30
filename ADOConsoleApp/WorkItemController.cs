@@ -75,7 +75,7 @@ namespace AspNetCoreAPI.Controllers
             // 3. Suggest desired partition count
             this.logger.LogInformation("How many bugs?");
 
-            return await this.skExecutor.introduce(bugs);
+            return await this.skExecutor.introduceEss("User questions");
         }
 
         // Deprecated

@@ -1,19 +1,13 @@
 ﻿using Microsoft.SemanticKernel.Orchestration;
 using Microsoft.SemanticKernel.SkillDefinition;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SkFromZero.Skills.EmailSkill
 {
     public class SendEmailSkill
     {
-        [SKFunction("Send an email to the receivers")]
-        [SKFunctionContextParameter(Name = "Receivers", Description = "The list of email addresses of the receivers, separated by ','")]
-        [SKFunctionContextParameter(Name = "Subject", Description = "The subject of the email")]
-        [SKFunctionContextParameter(Name = "Content", Description = "The content of the email")]
+        [SKFunction, Description("Send an email to the receivers")]
         public async Task<string> SendEmail(SKContext context)
         {
             var receivers = context["Receivers"].Split(',');

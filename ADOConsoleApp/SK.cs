@@ -5,6 +5,8 @@ using Microsoft.TeamFoundation.WorkItemTracking.WebApi.Models;
 using Microsoft.VisualStudio.Services.Common;
 using Microsoft.SemanticKernel.Orchestration;
 using Microsoft.SemanticKernel.SkillDefinition;
+using Microsoft.SemanticKernel.Planning;
+using SkFromZero.Skills.EmailSkill;
 
 public class SK: ISKExecutor
 {
@@ -91,23 +93,28 @@ public class SK: ISKExecutor
         //   Objects move in response to forces.
     }
 
-    public async Task<String> introduce(string question)
+    public async Task<String> introduceEss(string question)
     {
         string question = @"
-            1st Law of Thermodynamics - Energy cannot be created or destroyed.
-            2nd Law of Thermodynamics - For a spontaneous process, the entropy of the universe increases.
-            3rd Law of Thermodynamics - A perfect crystal at zero Kelvin has zero entropy.";
+            1st Law of Thermodynamics - Energy cannot be created or destroyed.";
 
-        Console.WriteLine("Oh, I'm console log");
+        //kernel.ImportSemanticSkillFromDirectory(SemanticKernelUtils.SkillsPath(), "WriterSkill");
+        kernel.ImportSkill(new SendEmailSkill(), "SendEmailSkill");
+        Console.WriteLine("Answer Ess questions");
 
-        var prompt = @"{{$input}}
+        Console.WriteLine("Hello, I am your AI assistant powered by Semantic Kernel. Please enter your goal.");
+        string? goal = Console.ReadLine();
 
-            One line TLDR with the fewest words.";
+        if (string.IsNullOrEmpty(goal))
+        {
+            return "Oh no the user didn't enter his answer";
+        }
 
-        var summarize = kernel.CreateSemanticFunction(prompt);
+        var plan = await new SequentialPlanner(kernel).CreatePlanAsync(goal);
+        var result = await plan.InvokeNextStepAsync(kernel.CreateNewContext()).ConfigureAwait(false);
 
-        var result = await summarize.InvokeAsync(text1);
-        return result.ToString();
+        //await SemanticKernelUtils.ExecutePlanAsync(kernel, plan, SemanticKernelUtils.ProgressUpdate);
+        return result.Description;
 
         // Output:
         //   Energy conserved, entropy increases, zero entropy at 0K.

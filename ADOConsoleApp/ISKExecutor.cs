@@ -6,5 +6,5 @@ public interface ISKExecutor
 
     Task<String> generateReport(IEnumerable<WorkItem> input);
 
-    Task<String> introduce(IEnumerable<WorkItem> input);
+    Task<String> introduceEss(String input);
 }
